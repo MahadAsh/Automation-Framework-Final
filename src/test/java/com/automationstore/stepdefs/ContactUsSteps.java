@@ -1,5 +1,6 @@
 package com.automationstore.stepdefs;
 
+import org.openqa.selenium.chrome.ChromeOptions;
 import com.automationstore.utils.ExcelUtils;
 import java.io.IOException;
 import com.automationstore.pages.ContactUsPage;
@@ -15,15 +16,21 @@ public class ContactUsSteps {
     WebDriver driver;
     ContactUsPage contactPage;
 
-    // Only run this setup for Scenarios tagged with @Contact
+ // Only run this setup for Scenarios tagged with @Contact
     @Before("@Contact")
     public void setup() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // Runs without a GUI (Crucial for GitHub)
+        options.addArguments("--window-size=1920,1080"); // Ensures elements are visible
+        options.addArguments("--disable-gpu");
+        options.addArguments("--no-sandbox");
+
+        driver = new ChromeDriver(options); // Pass the options here
+        
+        // driver.manage().window().maximize(); // Not needed in headless mode
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         contactPage = new ContactUsPage(driver);
     }
-
     @Given("I am on the contact us page")
     public void i_am_on_contact_page() {
         driver.get("https://automationteststore.com/index.php?rt=content/contact");
